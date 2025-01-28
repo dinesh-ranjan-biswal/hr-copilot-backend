@@ -22,6 +22,17 @@ class UserService {
             return {token:data.session.access_token,user:data.user};
         }    
     }
+
+    static async signoutUser(userId){
+        const error=await UserRepository.signoutUser(userId);
+        console.log(error);
+        if (error) {
+            throw new ApiError(Constants.HTTPINTERNALSERVERERROR,Constants.FAILED_STATUS,"Failed to log out user");
+        }else{
+            return true;
+        }
+        
+    }
 }
 
 export default UserService;

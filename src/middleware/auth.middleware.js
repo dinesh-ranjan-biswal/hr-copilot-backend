@@ -1,31 +1,32 @@
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken'; //* Import the entire CommonJS module
-import {Constants} from '../utils/constant.utils.js';
-import logger from '../utils/logger.utils.js';
-import { handelUnauthorized, handleServerError } from '../utils/responsehandler/index.utils.js';
-dotenv.config();
-const { verify } = jwt; //* Destructure the `verify` function from the imported module
+import { supabase } from "../config/supabaseclient.config.js";
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.header("Authorization");
+// Middleware for authentication
+const authenticateUser = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
-    return handelUnauthorized(res);
-  }
-
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7)
-    : authHeader;
-
-  verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
-    if (err) {
-      logger.error(err);
-      return handleServerError(res, err, Constants.HTTPFORBIDDEN);
+    // Ensure the token is present
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authorization token is missing or invalid' });
     }
 
+    const token = authHeader.split(' ')[1]; // Extract the token
+
+    // Verify the token using Supabase
+    const { data: user, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return res.status(401).json({ message: 'Invalid or expired token', error });
+    }
+
+    // Attach user info to the request object for further use
     req.user = user;
-    next();
-  });
+
+    next(); // Move to the next middleware or route handler
+  } catch (err) {
+    console.error('Error in authentication middleware:', err.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-export default authenticateToken;
+export default authenticateUser;

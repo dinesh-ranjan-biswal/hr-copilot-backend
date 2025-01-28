@@ -1,7 +1,7 @@
 import UserService from "../services/user.service.js";
 import ApiError from "../utils/apierror.utils.js";
 import  {Constants}  from "../utils/constant.utils.js";
-import { handelDataNotFound, handelLogin, handelServerDataCreated, handleServerError } from "../utils/responsehandler/index.utils.js";
+import { handelDataNotFound, handelLogin, handelServerDataCreated, handleServerError, handleSuccessCustomResponse } from "../utils/responsehandler/index.utils.js";
 
 class UserController {
 
@@ -30,6 +30,12 @@ class UserController {
       const loginUserDetails=await UserService.loginUser({email,password});
       loginUserDetails? handelLogin(res,loginUserDetails): handelDataNotFound(res);
     }
+  }
+
+  static async signoutUser(req,res){
+    const userId=req.user.id; 
+      const getLogoutUserStatus=await UserService.signoutUser(userId);
+      getLogoutUserStatus?  handleSuccessCustomResponse(res,"User logged out successfully") : handleSuccessCustomResponse(res,"Something went wrong.")
   }
 }
 
