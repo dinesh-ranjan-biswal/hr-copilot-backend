@@ -25,13 +25,12 @@ class UserRepository {
     return {data,error};
   }
 
-  static async signoutUser(userId){
-      const {error}=await supabase.auth.admin.signOut(userId);
+  static async signoutUser(){
+      const {error}=await supabase.auth.signOut({scope:"global"});
       if(error){
         return error;
-      }else{
-        return true;
       }
+      return null;
   }
 }
 

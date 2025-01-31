@@ -33,8 +33,8 @@ class UserController {
   }
 
   static async signoutUser(req,res){
-    const userId=req.user.id; 
-      const getLogoutUserStatus=await UserService.signoutUser(userId);
+    
+      const getLogoutUserStatus=await UserService.signoutUser();
       getLogoutUserStatus?  handleSuccessCustomResponse(res,"User logged out successfully") : handleSuccessCustomResponse(res,"Something went wrong.")
   }
 }

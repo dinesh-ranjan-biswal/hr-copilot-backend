@@ -23,14 +23,12 @@ class UserService {
         }    
     }
 
-    static async signoutUser(userId){
-        const error=await UserRepository.signoutUser(userId);
-        console.log(error);
-        if (error) {
+    static async signoutUser(){
+        const error=await UserRepository.signoutUser();
+        if(error){
             throw new ApiError(Constants.HTTPINTERNALSERVERERROR,Constants.FAILED_STATUS,"Failed to log out user");
-        }else{
-            return true;
         }
+        return true;
         
     }
 }
