@@ -25,10 +25,7 @@ class UserService {
 
     static async signoutUser(){
         const error=await UserRepository.signoutUser();
-        if(error){
-            throw new ApiError(Constants.HTTPINTERNALSERVERERROR,Constants.FAILED_STATUS,"Failed to log out user");
-        }
-        return true;
+        return !error
         
     }
 }
