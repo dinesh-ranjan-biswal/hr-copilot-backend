@@ -37,6 +37,10 @@ class UserController {
       const getLogoutUserStatus=await UserService.signoutUser();
       getLogoutUserStatus?  handleSuccessCustomResponse(res,"User logged out successfully") : handleCustomErrorResponse(res,Constants.HTTPINTERNALSERVERERROR,"Failed to log out user.");
   }
+
+  static async getAllUsers(req,res){
+    
+  }
 }
 
 export default UserController;
